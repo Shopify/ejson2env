@@ -1,0 +1,10 @@
+/ejson2env
+/tags
+/build/
+/pkg/
+/rubygem/pkg/
+/rubygem/build/
+/rubygem/man/
+/rubygem/LICENSE.txt
+/rubygem/lib/ejson2env/version.rb
+.bundle
