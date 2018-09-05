@@ -41,6 +41,6 @@ func ExtractEnv(secrets map[string]interface{}) (map[string]string, error) {
 // io.Writer.
 func ExportEnv(w io.Writer, values map[string]string) {
 	for key, value := range values {
-		fmt.Fprintf(w, "export %s=%s\n", key, value)
+		fmt.Fprintf(w, "export %s=\"%s\"\n", key, value)
 	}
 }
