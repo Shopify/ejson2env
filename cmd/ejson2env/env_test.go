@@ -27,7 +27,7 @@ func TestLoadSecrets(t *testing.T) {
 
 	ExportEnv(&buf, envValues)
 
-	if "export test_key=test_value\n" != buf.String() {
+	if "export test_key=\"test_value\"\n" != buf.String() {
 		t.Errorf("generated invalid export code: \n---\n%s\n---", buf.String())
 	}
 
