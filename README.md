@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/Shopify/ejson2env.svg?branch=master)](https://travis-ci.org/Shopify/ejson2env)
+[![codecov](https://codecov.io/gh/Shopify/ejson2env/branch/master/graph/badge.svg)](https://codecov.io/gh/Shopify/ejson2env)
+[![Go Report Card](https://goreportcard.com/badge/github.com/Shopify/ejson2env)](https://goreportcard.com/report/github.com/Shopify/ejson2env)
+
 # ejson2env
 
 ## Contributing
