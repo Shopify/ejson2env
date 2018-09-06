@@ -4,7 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"strings"
+
+	"github.com/taskcluster/shell"
 )
 
 var errNoEnv = errors.New("environment is not set in ejson")
@@ -42,7 +43,6 @@ func ExtractEnv(secrets map[string]interface{}) (map[string]string, error) {
 // io.Writer.
 func ExportEnv(w io.Writer, values map[string]string) {
 	for key, value := range values {
-		escapeValue := strings.Replace(value, "'", "'\\''", -1)
-		fmt.Fprintf(w, "export %s='%s'\n", key, escapeValue)
+		fmt.Fprintf(w, "export %s=%s\n", key, shell.Escape(value))
 	}
 }

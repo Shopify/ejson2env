@@ -24,7 +24,7 @@ func TestLoadSecrets(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if "test_value" != envValues["test_key"] {
+	if "test value" != envValues["test_key"] {
 		t.Error("Failed to decrypt")
 	}
 
@@ -32,7 +32,7 @@ func TestLoadSecrets(t *testing.T) {
 
 	ExportEnv(&buf, envValues)
 
-	expectedValue := "export test_key='test_value'\n"
+	expectedValue := "export test_key='test value'\n"
 
 	if expectedValue != buf.String() {
 		t.Error(formatInvalid(buf.String(), expectedValue))
