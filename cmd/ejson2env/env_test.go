@@ -2,10 +2,15 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"testing"
 )
 
 const TestKeyValue = "2ed65dd6a16eab833cc4d2a860baa60042da34a58ac43855e8554ca87a5e557d"
+
+func formatInvalid(received, expected string) string {
+	return fmt.Sprintf("generated invalid export code: \n---\n%s\n---\nshould be: \n---\n%s\n---\n", received, expected)
+}
 
 func TestLoadSecrets(t *testing.T) {
 
@@ -27,8 +32,10 @@ func TestLoadSecrets(t *testing.T) {
 
 	ExportEnv(&buf, envValues)
 
-	if "export test_key=\"test_value\"\n" != buf.String() {
-		t.Errorf("generated invalid export code: \n---\n%s\n---", buf.String())
+	expectedValue := "export test_key='test_value'\n"
+
+	if expectedValue != buf.String() {
+		t.Error(formatInvalid(buf.String(), expectedValue))
 	}
 
 }
@@ -63,6 +70,23 @@ func TestInvalidEnvironments(t *testing.T) {
 	_, err = ExtractEnv(testGood)
 	if nil != err {
 		t.Errorf("error when passed correctly formatted environment: %s", err)
+	}
+
+}
+
+func TestEscaping(t *testing.T) {
+	buf := bytes.Buffer{}
+
+	testValues := map[string]string{
+		"test": "test value'; echo dangerous; echo 'done",
+	}
+
+	ExportEnv(&buf, testValues)
+
+	expectedOutput := "export test='test value'\\''; echo dangerous; echo '\\''done'\n"
+
+	if expectedOutput != buf.String() {
+		t.Fatal(formatInvalid(buf.String(), expectedOutput))
 	}
 
 }
