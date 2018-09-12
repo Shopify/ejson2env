@@ -2,7 +2,7 @@
 
 
 [[projects]]
-  digest = "1:592227b56a67ff95396ec97eae38455b21f29c2a8f765db3f1cf903519e8b4f9"
+  digest = "1:38dee42c75e56389087daa6f1e59d0ed5dea7d7f005f6971c3882032f1165ae3"
   name = "github.com/Shopify/ejson"
   packages = [
     ".",
@@ -21,6 +21,14 @@
   revision = "057ac0edc14e44d03df3bb03449e666ff50884c1"
 
 [[projects]]
+  branch = "master"
+  digest = "1:359748076db09ce69fe1c6c8eb72890ec2aad07f06a24a8dc9bdb010bd9bc8f0"
+  name = "github.com/taskcluster/shell"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "4039a2cd6f88f2d42643202f189a7e30a5223224"
+
+[[projects]]
   digest = "1:b24d38b282bacf9791408a080f606370efa3d364e4b5fd9ba0f7b87786d3b679"
   name = "github.com/urfave/cli"
   packages = ["."]
@@ -29,7 +37,7 @@
   version = "v1.20.0"
 
 [[projects]]
-  digest = "1:959cd7c97a1e58b6f077d1f87ea2aa8ec3c06efa6329e5b59b8b433648b0ef85"
+  digest = "1:edfe1808958ddd8ec07c6a62fbd0a89bca3c9877553b96b306d6a3161ab8785c"
   name = "golang.org/x/crypto"
   packages = [
     "curve25519",
@@ -46,6 +54,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/Shopify/ejson",
+    "github.com/taskcluster/shell",
     "github.com/urfave/cli",
   ]
   solver-name = "gps-cdcl"
