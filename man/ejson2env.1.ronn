@@ -72,15 +72,15 @@ The following output would be generated for our example:
 export DB_PASSWORD=1234password
 ``` 
 
-You can then export them to the shell environment by calling the command
-surrounded by backticks. 
+You can then export them to the shell environment by calling the `ejson2env`
+command with `eval` command.
 
 For example:
 
 ```
 #!/bin/sh
 
-`ejson2env /config/secrets.production.ejson`
+eval $(ejson2env /config/secrets.production.ejson)
 
 echo $DB_PASSWORD
 ```
