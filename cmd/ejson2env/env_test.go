@@ -40,6 +40,42 @@ func TestLoadSecrets(t *testing.T) {
 
 }
 
+func TestLoadNoEnvSecrets(t *testing.T) {
+
+	rawValues, err := ReadSecrets("test2.ejson", "./key", TestKeyValue)
+	if nil != err {
+		t.Fatal(err)
+	}
+
+	_, err = ExtractEnv(rawValues)
+	if errNoEnv != err {
+		t.Fatal(err)
+	}
+
+	if isFailure(err) {
+		t.Fatalf("shouldn't have caused a failure: %s", err)
+	}
+
+}
+
+func TestLoadBadEnvSecrets(t *testing.T) {
+
+	rawValues, err := ReadSecrets("test3.ejson", "./key", TestKeyValue)
+	if nil != err {
+		t.Fatal(err)
+	}
+
+	_, err = ExtractEnv(rawValues)
+	if errEnvNotMap != err {
+		t.Fatal(err)
+	}
+
+	if isFailure(err) {
+		t.Fatalf("shouldn't have caused a failure: %s", err)
+	}
+
+}
+
 func TestInvalidEnvironments(t *testing.T) {
 	testGood := map[string]interface{}{
 		"environment": map[string]interface{}{
