@@ -13,23 +13,6 @@ func fail(err error) {
 	os.Exit(1)
 }
 
-// exportSecrets wraps the read, extract, and export steps. Returns
-// an error if any step fails.
-func exportSecrets(filename, keyDir, privateKey string) error {
-	secrets, err := ReadSecrets(filename, keyDir, privateKey)
-	if nil != err {
-		return (fmt.Errorf("could not load ejson file: %s", err))
-	}
-
-	envValues, err := ExtractEnv(secrets)
-	if nil != err {
-		return fmt.Errorf("could not load environment from file: %s", err)
-	}
-
-	ExportEnv(os.Stdout, envValues)
-	return nil
-}
-
 func main() {
 	app := cli.NewApp()
 	app.Usage = "get environment variables from ejson files"
