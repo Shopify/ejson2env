@@ -4,10 +4,15 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 
 	"github.com/Shopify/ejson"
 )
+
+// ExportFunction is implemented in exportSecrets as an easy way
+// to select how secrets are exported
+type ExportFunction func(io.Writer, map[string]string)
 
 // ReadSecrets reads the secrets for the passed filename and
 // returns them as a map[string]interface{}.
@@ -37,7 +42,7 @@ func isFailure(err error) bool {
 
 // exportSecrets wraps the read, extract, and export steps. Returns
 // an error if any step fails.
-func exportSecrets(filename, keyDir, privateKey string, quiet bool) error {
+func exportSecrets(filename, keyDir, privateKey string, exportFunc ExportFunction) error {
 	secrets, err := ReadSecrets(filename, keyDir, privateKey)
 	if nil != err {
 		return fmt.Errorf("could not load ejson file: %s", err)
@@ -48,10 +53,6 @@ func exportSecrets(filename, keyDir, privateKey string, quiet bool) error {
 		return fmt.Errorf("could not load environment from file: %s", err)
 	}
 
-	if quiet {
-		ExportQuiet(os.Stdout, envValues)
-	} else {
-		ExportEnv(os.Stdout, envValues)
-	}
+	exportFunc(os.Stdout, envValues)
 	return nil
 }
