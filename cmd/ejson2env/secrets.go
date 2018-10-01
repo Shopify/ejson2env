@@ -37,7 +37,7 @@ func isFailure(err error) bool {
 
 // exportSecrets wraps the read, extract, and export steps. Returns
 // an error if any step fails.
-func exportSecrets(filename, keyDir, privateKey string) error {
+func exportSecrets(filename, keyDir, privateKey string, quiet bool) error {
 	secrets, err := ReadSecrets(filename, keyDir, privateKey)
 	if nil != err {
 		return fmt.Errorf("could not load ejson file: %s", err)
@@ -48,6 +48,10 @@ func exportSecrets(filename, keyDir, privateKey string) error {
 		return fmt.Errorf("could not load environment from file: %s", err)
 	}
 
-	ExportEnv(os.Stdout, envValues)
+	if quiet {
+		ExportQuiet(os.Stdout, envValues)
+	} else {
+		ExportEnv(os.Stdout, envValues)
+	}
 	return nil
 }
