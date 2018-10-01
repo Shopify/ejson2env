@@ -38,10 +38,11 @@ func main() {
 
 	app.Action = func(c *cli.Context) {
 		var filename string
+		var userSuppliedPrivateKey string
 
 		keydir := c.String("keydir")
 		quiet := c.Bool("quiet")
-		var userSuppliedPrivateKey string
+
 		// select the ExportFunction to use
 		exportFunc := ExportEnv
 		if quiet {
