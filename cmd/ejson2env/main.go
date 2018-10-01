@@ -30,14 +30,25 @@ func main() {
 			Name:  "key-from-stdin",
 			Usage: "Read the private key from STDIN",
 		},
+		cli.BoolFlag{
+			Name:  "quiet, q",
+			Usage: "Suppress export statement",
+		},
 	}
 
 	app.Action = func(c *cli.Context) {
 		var filename string
+		var userSuppliedPrivateKey string
 
 		keydir := c.String("keydir")
+		quiet := c.Bool("quiet")
 
-		var userSuppliedPrivateKey string
+		// select the ExportFunction to use
+		exportFunc := ExportEnv
+		if quiet {
+			exportFunc = ExportQuiet
+		}
+
 		if c.Bool("key-from-stdin") {
 			var err error
 			userSuppliedPrivateKey, err = readKey(os.Stdin)
@@ -54,7 +65,7 @@ func main() {
 			fail(fmt.Errorf("no secrets.ejson filename passed"))
 		}
 
-		if err := exportSecrets(filename, keydir, userSuppliedPrivateKey); nil != err {
+		if err := exportSecrets(filename, keydir, userSuppliedPrivateKey, exportFunc); nil != err {
 			fail(err)
 		}
 	}
