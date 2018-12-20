@@ -22,7 +22,7 @@ For example, with the below `ejson` file:
 Running:
 
 ```shell
-$ ejson test.ejson
+$ ejson2env test.ejson
 ```
 
 Would result in the following output:
@@ -34,7 +34,7 @@ export SECRET_SHELL_VARIABLE=<decrypted data>
 You can then have your shell evaluate this output:
 
 ```shell
-$ eval $(ejson test.ejson)
+$ eval $(ejson2env test.ejson)
 ```
 
 ## Using ejson2env
