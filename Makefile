@@ -14,7 +14,7 @@ BUNDLE_EXEC=bundle exec
 
 default: all
 all: gem deb
-binaries: build/bin/linux-amd64/ejson2env build/bin/darwin-amd64/ejson2env
+binaries: build/bin/linux-amd64 build/bin/darwin-amd64
 gem: $(GEM)
 deb: $(DEB)
 man: $(MANFILES)
@@ -23,18 +23,18 @@ build/man/%.gz: man/%.ronn
 	mkdir -p "$(@D)"
 	set -euo pipefail ; $(BUNDLE_EXEC) ronn -r --pipe "$<" | gzip > "$@" || (rm -f "$<" && false)
 
-build/bin/linux-amd64/%: $(GOFILES)
+build/bin/linux-amd64: $(GOFILES)
 	mkdir -p "$(@D)"
 	GOOS=linux GOARCH=amd64 go build \
 	-ldflags '-s -w -X main.version="$(VERSION)"' \
 	-o "$@" \
-	"$(PACKAGE)/cmd/$(@F)"
+	"$(PACKAGE)/cmd/$(NAME)"
 
-build/bin/darwin-amd64/%: $(GOFILES)
+build/bin/darwin-amd64: $(GOFILES)
 	GOOS=darwin GOARCH=amd64 go build \
 	-ldflags '-s -w -X main.version="$(VERSION)"' \
 	-o "$@" \
-	"$(PACKAGE)/cmd/$(@F)"
+	"$(PACKAGE)/cmd/$(NAME)"
 
 $(GEM): rubygem/$(NAME)-$(VERSION).gem
 	mkdir -p $(@D)
@@ -54,11 +54,11 @@ rubygem/LICENSE.txt: LICENSE.txt
 rubygem/man: man
 	cp -a build/man $@
 
-rubygem/build/darwin-amd64/%: build/bin/darwin-amd64/%
+rubygem/build/darwin-amd64/ejson2env: build/bin/darwin-amd64
 	mkdir -p $(@D)
 	cp -a "$<" "$@"
 
-rubygem/build/linux-amd64/%: build/bin/linux-amd64/%
+rubygem/build/linux-amd64/ejson2env: build/bin/linux-amd64
 	mkdir -p $(@D)
 	cp -a "$<" "$@"
 
@@ -66,7 +66,7 @@ rubygem/lib/$(NAME)/version.rb: VERSION
 	mkdir -p $(@D)
 	echo 'module $(RUBY_MODULE)\n  VERSION = "$(VERSION)"\nend' > $@
 
-$(DEB): build/bin/linux-amd64/ejson2env man
+$(DEB): build/bin/linux-amd64 man
 	mkdir -p $(@D)
 	rm -f "$@"
 	$(BUNDLE_EXEC) fpm \
@@ -84,7 +84,7 @@ $(DEB): build/bin/linux-amd64/ejson2env man
 		--description="utility for decrypting ejson secrets and helping to export them as environment variables" \
 		--url="https://github.com/Shopify/ejson2env" \
 		./build/man/=/usr/share/man/ \
-		./build/bin/linux-amd64/ejson2env=/usr/bin/ejson2env
+		./build/bin/linux-amd64=/usr/bin/ejson2env
 
 clean:
 	rm -rf build pkg rubygem/{LICENSE.txt,lib/ejson2env/version.rb,build,*.gem}
