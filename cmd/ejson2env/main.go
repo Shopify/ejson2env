@@ -7,6 +7,9 @@ import (
 	"github.com/urfave/cli"
 )
 
+// version information. This will be overridden by the ldflags
+var version = "dev"
+
 // fail prints the error message to stderr, then ends execution.
 func fail(err error) {
 	fmt.Fprintf(os.Stderr, "error: %s\n", err)
@@ -16,7 +19,7 @@ func fail(err error) {
 func main() {
 	app := cli.NewApp()
 	app.Usage = "get environment variables from ejson files"
-	app.Version = VERSION
+	app.Version = version
 	app.Author = "Catherine Jones"
 	app.Email = "catherine.jones@shopify.com"
 	app.Flags = []cli.Flag{
