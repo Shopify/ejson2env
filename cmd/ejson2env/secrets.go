@@ -14,6 +14,10 @@ import (
 // to select how secrets are exported
 type ExportFunction func(io.Writer, map[string]string)
 
+// output is a pointer to the io.Writer to use. This allows us to override
+// stdout for testing purposes.
+var output io.Writer = os.Stdout
+
 // ReadSecrets reads the secrets for the passed filename and
 // returns them as a map[string]interface{}.
 func ReadSecrets(filename, keyDir, privateKey string) (map[string]interface{}, error) {
@@ -27,11 +31,7 @@ func ReadSecrets(filename, keyDir, privateKey string) (map[string]interface{}, e
 	decoder := json.NewDecoder(bytes.NewReader(decrypted))
 
 	err = decoder.Decode(&secrets)
-	if nil != err {
-		return secrets, err
-	}
-
-	return secrets, nil
+	return secrets, err
 }
 
 // isFailure returns true if the passed error should prompt a
@@ -49,10 +49,10 @@ func exportSecrets(filename, keyDir, privateKey string, exportFunc ExportFunctio
 	}
 
 	envValues, err := ExtractEnv(secrets)
-	if isFailure(err) {
-		return fmt.Errorf("could not load environment from file: %s", err)
+	if !isFailure(err) {
+		exportFunc(output, envValues)
 	}
 
-	exportFunc(os.Stdout, envValues)
+	// ExtractEnv does not return an error we need to handle.
 	return nil
 }

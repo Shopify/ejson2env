@@ -14,7 +14,7 @@ func formatInvalid(received, expected string) string {
 
 func TestLoadSecrets(t *testing.T) {
 
-	rawValues, err := ReadSecrets("test.ejson", "./key", TestKeyValue)
+	rawValues, err := ReadSecrets("../../testdata/test.ejson", "./key", TestKeyValue)
 	if nil != err {
 		t.Fatal(err)
 	}
@@ -27,22 +27,11 @@ func TestLoadSecrets(t *testing.T) {
 	if "test value" != envValues["test_key"] {
 		t.Error("Failed to decrypt")
 	}
-
-	var buf bytes.Buffer
-
-	ExportEnv(&buf, envValues)
-
-	expectedValue := "export test_key='test value'\n"
-
-	if expectedValue != buf.String() {
-		t.Error(formatInvalid(buf.String(), expectedValue))
-	}
-
 }
 
 func TestLoadNoEnvSecrets(t *testing.T) {
 
-	rawValues, err := ReadSecrets("test2.ejson", "./key", TestKeyValue)
+	rawValues, err := ReadSecrets("../../testdata/test2.ejson", "./key", TestKeyValue)
 	if nil != err {
 		t.Fatal(err)
 	}
@@ -60,7 +49,7 @@ func TestLoadNoEnvSecrets(t *testing.T) {
 
 func TestLoadBadEnvSecrets(t *testing.T) {
 
-	rawValues, err := ReadSecrets("test3.ejson", "./key", TestKeyValue)
+	rawValues, err := ReadSecrets("../../testdata/test3.ejson", "./key", TestKeyValue)
 	if nil != err {
 		t.Fatal(err)
 	}
@@ -98,9 +87,9 @@ func TestInvalidEnvironments(t *testing.T) {
 
 	_, err = ExtractEnv(testNoEnv)
 	if nil == err {
-		t.Errorf("no error when passed a non-existiant environment")
+		t.Errorf("no error when passed a non-existent environment")
 	} else if errNoEnv != err {
-		t.Errorf("wrong error when passed a non-existiant environment: %s", err)
+		t.Errorf("wrong error when passed a non-existent environment: %s", err)
 	}
 
 	_, err = ExtractEnv(testGood)
