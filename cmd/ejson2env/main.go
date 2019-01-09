@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/Shopify/ejson2env"
 	"github.com/urfave/cli"
 )
 
@@ -47,9 +48,9 @@ func main() {
 		quiet := c.Bool("quiet")
 
 		// select the ExportFunction to use
-		exportFunc := ExportEnv
+		exportFunc := ejson2env.ExportEnv
 		if quiet {
-			exportFunc = ExportQuiet
+			exportFunc = ejson2env.ExportQuiet
 		}
 
 		if c.Bool("key-from-stdin") {
@@ -68,7 +69,7 @@ func main() {
 			fail(fmt.Errorf("no secrets.ejson filename passed"))
 		}
 
-		if err := exportSecrets(filename, keydir, userSuppliedPrivateKey, exportFunc); nil != err {
+		if err := ejson2env.ReadAndExportEnv(filename, keydir, userSuppliedPrivateKey, exportFunc); nil != err {
 			fail(err)
 		}
 	}
