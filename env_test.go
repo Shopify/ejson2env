@@ -1,4 +1,4 @@
-package main
+package ejson2env
 
 import (
 	"bytes"
@@ -14,7 +14,7 @@ func formatInvalid(received, expected string) string {
 
 func TestLoadSecrets(t *testing.T) {
 
-	rawValues, err := ReadSecrets("../../testdata/test.ejson", "./key", TestKeyValue)
+	rawValues, err := readSecrets("testdata/test.ejson", "./key", TestKeyValue)
 	if nil != err {
 		t.Fatal(err)
 	}
@@ -31,7 +31,7 @@ func TestLoadSecrets(t *testing.T) {
 
 func TestLoadNoEnvSecrets(t *testing.T) {
 
-	rawValues, err := ReadSecrets("../../testdata/test2.ejson", "./key", TestKeyValue)
+	rawValues, err := readSecrets("testdata/test2.ejson", "./key", TestKeyValue)
 	if nil != err {
 		t.Fatal(err)
 	}
@@ -41,7 +41,7 @@ func TestLoadNoEnvSecrets(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if isFailure(err) {
+	if !IsEnvError(err) {
 		t.Fatalf("shouldn't have caused a failure: %s", err)
 	}
 
@@ -49,7 +49,7 @@ func TestLoadNoEnvSecrets(t *testing.T) {
 
 func TestLoadBadEnvSecrets(t *testing.T) {
 
-	rawValues, err := ReadSecrets("../../testdata/test3.ejson", "./key", TestKeyValue)
+	rawValues, err := readSecrets("testdata/test3.ejson", "./key", TestKeyValue)
 	if nil != err {
 		t.Fatal(err)
 	}
@@ -59,7 +59,7 @@ func TestLoadBadEnvSecrets(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if isFailure(err) {
+	if !IsEnvError(err) {
 		t.Fatalf("shouldn't have caused a failure: %s", err)
 	}
 
@@ -67,7 +67,7 @@ func TestLoadBadEnvSecrets(t *testing.T) {
 
 func TestLoadUnderscoreEnvSecrets(t *testing.T) {
 
-	rawValues, err := ReadSecrets("../../testdata/test4.ejson", "./key", TestKeyValue)
+	rawValues, err := readSecrets("testdata/test4.ejson", "./key", TestKeyValue)
 	if nil != err {
 		t.Fatal(err)
 	}

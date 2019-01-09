@@ -1,11 +1,8 @@
-package main
+package ejson2env
 
 import (
 	"errors"
 	"fmt"
-	"io"
-
-	"github.com/taskcluster/shell"
 )
 
 var errNoEnv = errors.New("environment is not set in ejson")
@@ -39,18 +36,13 @@ func ExtractEnv(secrets map[string]interface{}) (map[string]string, error) {
 	return envSecrets, nil
 }
 
-// ExportEnv writes the passed environment values to the passed
-// io.Writer.
-func ExportEnv(w io.Writer, values map[string]string) {
-	for key, value := range values {
-		fmt.Fprintf(w, "export %s=%s\n", key, shell.Escape(value))
+// ReadAndExtractEnv wraps the read and extract steps. Returns
+// a map[string]string containing the environment secrets to export.
+func ReadAndExtractEnv(filename, keyDir, privateKey string) (map[string]string, error) {
+	secrets, err := readSecrets(filename, keyDir, privateKey)
+	if nil != err {
+		return map[string]string{}, fmt.Errorf("could not load ejson file: %s", err)
 	}
-}
 
-// ExportQuiet writes the passed environment values to the passed
-// io.Writer in %s=%s format.
-func ExportQuiet(w io.Writer, values map[string]string) {
-	for key, value := range values {
-		fmt.Fprintf(w, "%s=%s\n", key, shell.Escape(value))
-	}
+	return ExtractEnv(secrets)
 }

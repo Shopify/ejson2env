@@ -1,4 +1,4 @@
-package main
+package ejson2env
 
 import (
 	"bytes"
@@ -10,7 +10,7 @@ import (
 func TestReadSecrets(t *testing.T) {
 	var err error
 
-	_, err = ReadSecrets("../../testdata/bad.ejson", "./key", TestKeyValue)
+	_, err = ReadAndExtractEnv("testdata/bad.ejson", "./key", TestKeyValue)
 	if nil == err {
 		t.Fatal("failed to fail when loading a broken ejson file")
 	}
@@ -46,7 +46,7 @@ func TestReadAndExportEnv(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		err := exportSecrets("../../testdata/test.ejson", "./key", TestKeyValue, test.exportFunc)
+		err := ReadAndExportEnv("testdata/test.ejson", "./key", TestKeyValue, test.exportFunc)
 		if nil != err {
 			t.Errorf("testing %s failed: %s", test.name, err)
 			continue
@@ -72,7 +72,7 @@ func TestReadAndExportEnvWithBadEjson(t *testing.T) {
 		output = os.Stdout
 	}()
 
-	err = exportSecrets("../../testdata/bad.ejson", "./key", TestKeyValue, ExportEnv)
+	err = ReadAndExportEnv("bad.ejson", "./key", TestKeyValue, ExportEnv)
 	if nil == err {
 		t.Fatal("failed to fail when loading a broken ejson file")
 	}
