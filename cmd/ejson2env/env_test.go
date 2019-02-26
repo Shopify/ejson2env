@@ -65,6 +65,24 @@ func TestLoadBadEnvSecrets(t *testing.T) {
 
 }
 
+func TestLoadUnderscoreEnvSecrets(t *testing.T) {
+
+	rawValues, err := ReadSecrets("../../testdata/test4.ejson", "./key", TestKeyValue)
+	if nil != err {
+		t.Fatal(err)
+	}
+
+	envValues, err := ExtractEnv(rawValues)
+	if nil != err {
+		t.Fatal(err)
+	}
+
+	if "test value" != envValues["_test_key"] {
+		t.Error("Failed to decrypt")
+	}
+
+}
+
 func TestInvalidEnvironments(t *testing.T) {
 	testGood := map[string]interface{}{
 		"environment": map[string]interface{}{
