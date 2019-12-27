@@ -14,7 +14,7 @@ BUNDLE_EXEC=bundle exec
 
 default: all
 all: gem deb
-binaries: build/bin/linux-amd64 build/bin/darwin-amd64
+binaries: build/bin/linux-amd64 build/bin/darwin-amd64 build/bin/freebsd-amd64
 gem: $(GEM)
 deb: $(DEB)
 man: $(MANFILES)
@@ -36,6 +36,12 @@ build/bin/darwin-amd64: $(GOFILES)
 	-o "$@" \
 	"$(PACKAGE)/cmd/$(NAME)"
 
+build/bin/freebsd-amd64: $(GOFILES)
+	GOOS=freebsd GOARCH=amd64 go build \
+	-ldflags '-s -w -X main.version="$(VERSION)"' \
+	-o "$@" \
+	"$(PACKAGE)/cmd/$(NAME)"
+
 $(GEM): rubygem/$(NAME)-$(VERSION).gem
 	mkdir -p $(@D)
 	mv "$<" "$@"
@@ -45,6 +51,7 @@ rubygem/$(NAME)-$(VERSION).gem: \
 	rubygem/build/linux-amd64/ejson2env \
 	rubygem/LICENSE.txt \
 	rubygem/build/darwin-amd64/ejson2env \
+	rubygem/build/freebsd-amd64/ejson2env \
 	rubygem/man
 	cd rubygem && gem build ejson2env.gemspec
 
@@ -59,6 +66,10 @@ rubygem/build/darwin-amd64/ejson2env: build/bin/darwin-amd64
 	cp -a "$<" "$@"
 
 rubygem/build/linux-amd64/ejson2env: build/bin/linux-amd64
+	mkdir -p $(@D)
+	cp -a "$<" "$@"
+
+rubygem/build/freebsd-amd64/ejson2env: build/bin/freebsd-amd64
 	mkdir -p $(@D)
 	cp -a "$<" "$@"
 
