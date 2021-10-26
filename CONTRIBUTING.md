@@ -57,7 +57,7 @@ $ git push -u <your username> <the name of your branch>
 The release process is somewhat awkward right now. `ejson2env` is released in
 four ways:
 
-* `linux-amd64` and `darwin-amd64`
+* `linux-amd64`, `darwin-amd64`, `darwin-arm64`
 * rubygem;
 * `.deb` package; and
 * homebrew formula

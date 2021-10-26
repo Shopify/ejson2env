@@ -14,7 +14,7 @@ BUNDLE_EXEC=bundle exec
 
 default: all
 all: gem deb
-binaries: build/bin/linux-amd64 build/bin/darwin-amd64 build/bin/freebsd-amd64
+binaries: build/bin/linux-amd64 build/bin/darwin-universal build/bin/freebsd-amd64
 gem: $(GEM)
 deb: $(DEB)
 man: $(MANFILES)
@@ -36,6 +36,15 @@ build/bin/darwin-amd64: $(GOFILES)
 	-o "$@" \
 	"$(PACKAGE)/cmd/$(NAME)"
 
+build/bin/darwin-arm64: $(GOFILES)
+	GOOS=darwin GOARCH=arm64 go build \
+	-ldflags '-s -w -X main.version="$(VERSION)"' \
+	-o "$@" \
+	"$(PACKAGE)/cmd/$(NAME)"
+
+build/bin/darwin-universal: build/bin/darwin-amd64 build/bin/darwin-arm64
+	$(V)lipo -create -output "$@" $^
+
 build/bin/freebsd-amd64: $(GOFILES)
 	GOOS=freebsd GOARCH=amd64 go build \
 	-ldflags '-s -w -X main.version="$(VERSION)"' \
@@ -50,7 +59,7 @@ rubygem/$(NAME)-$(VERSION).gem: \
 	rubygem/lib/$(NAME)/version.rb \
 	rubygem/build/linux-amd64/ejson2env \
 	rubygem/LICENSE.txt \
-	rubygem/build/darwin-amd64/ejson2env \
+	rubygem/build/darwin-universal/ejson2env \
 	rubygem/build/freebsd-amd64/ejson2env \
 	rubygem/man
 	cd rubygem && gem build ejson2env.gemspec
@@ -61,7 +70,7 @@ rubygem/LICENSE.txt: LICENSE.txt
 rubygem/man: man
 	cp -a build/man $@
 
-rubygem/build/darwin-amd64/ejson2env: build/bin/darwin-amd64
+rubygem/build/darwin-universal/ejson2env: build/bin/darwin-universal
 	mkdir -p $(@D)
 	cp -a "$<" "$@"
 
