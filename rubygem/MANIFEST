@@ -1,6 +1,7 @@
 bin/ejson2env
 build/darwin-universal/ejson2env
 build/linux-amd64/ejson2env
+build/linux-arm64/ejson2env
 build/freebsd-amd64/ejson2env
 man/ejson2env.1.gz
 ejson2env.gemspec

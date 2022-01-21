@@ -65,6 +65,7 @@ $(GEM): rubygem/$(NAME)-$(VERSION).gem
 rubygem/$(NAME)-$(VERSION).gem: \
 	rubygem/lib/$(NAME)/version.rb \
 	rubygem/build/linux-amd64/ejson2env \
+	rubygem/build/linux-arm64/ejson2env \
 	rubygem/LICENSE.txt \
 	rubygem/build/darwin-universal/ejson2env \
 	rubygem/build/freebsd-amd64/ejson2env \
@@ -82,6 +83,10 @@ rubygem/build/darwin-universal/ejson2env: build/bin/darwin-universal
 	cp -a "$<" "$@"
 
 rubygem/build/linux-amd64/ejson2env: build/bin/linux-amd64
+	mkdir -p $(@D)
+	cp -a "$<" "$@"
+
+rubygem/build/linux-arm64/ejson2env: build/bin/linux-arm64
 	mkdir -p $(@D)
 	cp -a "$<" "$@"
 
