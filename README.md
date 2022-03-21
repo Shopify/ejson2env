@@ -46,10 +46,10 @@ $ eval $(ejson2env test.ejson)
 
 ### Go
 
-`ejson2env` can be installed using the regular `go get` tool:
+`ejson2env` can be installed using the regular `go install` tool:
 
 ```shell
-$ go get -u github.com/Shopify/ejson2env/cmd/ejson2env
+$ go install github.com/Shopify/ejson2env/v2/cmd/ejson2env@latest
 ```
 
 You can then find the compiled binary in `$GOPATH/bin`
