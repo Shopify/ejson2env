@@ -1,4 +1,4 @@
-module github.com/Shopify/ejson2env
+module github.com/Shopify/ejson2env/v2
 
 go 1.18
 
