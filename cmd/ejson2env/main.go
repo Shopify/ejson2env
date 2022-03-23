@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Shopify/ejson2env"
+	"github.com/Shopify/ejson2env/v2"
 	"github.com/urfave/cli"
 )
 
