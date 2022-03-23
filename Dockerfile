@@ -1,7 +1,7 @@
 FROM golang:1.18.0-alpine AS builder
 WORKDIR /go/src/github.com/Shopify/ejson2env
 COPY . .
-RUN apk add --no-cache git bash make && \
+RUN apk add --no-cache git && \
     go install -v github.com/Shopify/ejson2env/v2/cmd/ejson2env
 
 FROM scratch
