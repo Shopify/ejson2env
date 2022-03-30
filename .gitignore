@@ -1,3 +1,4 @@
+dist/
 /ejson2env
 /tags
 /build/
@@ -7,4 +8,5 @@
 /rubygem/man/
 /rubygem/LICENSE.txt
 /rubygem/lib/ejson2env/version.rb
+/tmp
 .bundle

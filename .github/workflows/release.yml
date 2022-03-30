@@ -1,0 +1,56 @@
+name: Release
+
+on:
+  push:
+    tags: [ 'v*.*.*' ]
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.18
+      - name: Extract release changelog
+        id: version
+        run: |
+          version=${GITHUB_REF#refs/tags/v*}
+          mkdir -p tmp
+          sed '/^# '$version'/,/^# /!d;//d;/^\s*$/d' CHANGELOG.md > tmp/release_changelog.md
+          echo ::set-output name=VERSION::$version
+      - name: Release
+        uses: goreleaser/goreleaser-action@v2
+        with:
+          distribution: goreleaser
+          version: v1.2.1
+          args: release --rm-dist --release-notes=tmp/release_changelog.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7.3
+      - name: RubyGem
+        id: rubygem
+        run: ./rubygem/build.sh
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload Gem Asset
+        id: upload-gem-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: "https://uploads.github.com/repos/${{ github.repository }}/releases/${{ steps.rubygem.outputs.release_id }}/assets?name=ejson2env-${{ steps.version.outputs.version }}.gem"
+          asset_path: "./rubygem/ejson2env-${{ steps.version.outputs.version }}.gem"
+          asset_name: "ejson2env-${{ steps.version.outputs.version }}.gem"
+          asset_content_type: application/x-tar

@@ -1,0 +1,21 @@
+# .goreleaser.yaml
+universal_binaries:
+  - replace: true
+builds:
+  - id: ejson2env
+    main: ./cmd/ejson2env/
+    goos:
+      - freebsd
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+
+nfpms:
+  - id: packages
+    maintainer: security@shopify.com
+    formats:
+    - apk
+    - deb
+    - rpm

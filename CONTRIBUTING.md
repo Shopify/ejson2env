@@ -37,8 +37,7 @@ $ git checkout -b <the name of your branch>
 
 - Code/write! :keyboard:
 
-    - If working on code, please run `go fmt` and `golint` while you work on
-your change, to clean up your formatting/check for issues.
+    - If working on code, please run `go fmt` and `golangci-lint` before opening a PR against `main`.
 
 - Push your changes to your fork's remote:
 
@@ -54,25 +53,17 @@ $ git push -u <your username> <the name of your branch>
 
 ## Releasing
 
-The release process is somewhat awkward right now. `ejson2env` is released in
-four ways:
+Binaries and packages are built with [GoReleaser](https://goreleaser.com). GoReleaser runs when a new version is tagged.
 
-* `linux-amd64`, `darwin-amd64`, `darwin-arm64`
-* rubygem;
-* `.deb` package; and
-* homebrew formula
+Before releasing a new version, bump `/VERSION`, commit the changes and open a PR to merge the changes into `main`.
 
-Before releasing a new version, bump `/VERSION`, then run `make`, and commit
-the changes. Tag this commit using `git tag vx.y.z`, e.g. `v1.0.0`.
+Tag the commit in `main` using `git tag vx.y.z`, e.g. `v1.0.0`.
 
 In order to release the rubygem, find someone in the owners list at
 https://rubygems.org/gems/ejson2env and ask them to add you, then:
 
-1. `make`
-2. `gem push pkg/ejson2env-x.y.z.gem`
-
-To release the `.deb` package, edit the github release for the tag, and drop
-the `pkg/*.deb` in.
+1. Download the gem file from the release
+1. `gem push ejson2env-x.y.z.gem`
 
 Releasing the homebrew package is more awkward. There is surely a more
 efficient way to do this but current process is:
