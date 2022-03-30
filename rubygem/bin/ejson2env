@@ -2,7 +2,7 @@
 platform = `uname -sm`
 
 dir = case platform
-      when /^Darwin/    ; "darwin-universal"
+      when /^Darwin/    ; "darwin-all"
       when /^Linux.*64/ ; "linux-amd64"
       when /^FreeBSD.*64/ ; "freebsd-amd64"
       else
