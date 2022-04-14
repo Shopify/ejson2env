@@ -8,16 +8,16 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        go: [ '1.17', '1.18' ]
-    name: Go ${{ matrix.go }} test
+    name: Go test
     steps:
       - uses: actions/checkout@v2
+      - name: Get latest Go version
+        id: gover
+        run: echo ::set-output name=goversion::$(awk -F':|-' '/^FROM golang/ {print $2}' Dockerfile)
       - name: Setup go
         uses: actions/setup-go@v2
         with:
-          go-version: ${{ matrix.go }}
+          go-version: "${{ steps.gover.outputs.goversion }}"
       - run: |
           go mod download
           go test -race -coverprofile=coverage.txt -covermode=atomic
