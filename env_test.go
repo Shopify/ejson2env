@@ -94,6 +94,12 @@ func TestInvalidEnvironments(t *testing.T) {
 		"environment": "bad",
 	}
 
+	testBadInvalidKey := map[string]interface{}{
+		"environment": map[string]interface{}{
+			"invalid key": "test_value",
+		},
+	}
+
 	var testNoEnv map[string]interface{}
 
 	_, err := ExtractEnv(testBadNonMap)
@@ -101,6 +107,13 @@ func TestInvalidEnvironments(t *testing.T) {
 		t.Errorf("no error when passed a non-map environment")
 	} else if errEnvNotMap != err {
 		t.Errorf("wrong error when passed a non-map environment: %s", err)
+	}
+
+	_, err = ExtractEnv(testBadInvalidKey)
+	if nil == err {
+		t.Errorf("no error when passed an environment with invalid key")
+	} else if `invalid identifier as key in environment: "invalid key"` != err.Error() {
+		t.Errorf("wrong error when passed an environment with invalid key: %s", err)
 	}
 
 	_, err = ExtractEnv(testNoEnv)
@@ -132,4 +145,46 @@ func TestEscaping(t *testing.T) {
 		t.Fatal(formatInvalid(buf.String(), expectedOutput))
 	}
 
+}
+
+func TestIdentifierPattern(t *testing.T) {
+	key := "ALL_CAPS123"
+	if !validIdentifierPattern.MatchString(key) {
+		t.Errorf("key should match pattern %q: %q", validIdentifierPattern, key)
+	}
+
+	key = "lowercase"
+	if !validIdentifierPattern.MatchString(key) {
+		t.Errorf("key should match pattern %q: %q", validIdentifierPattern, key)
+	}
+
+	key = "a"
+	if !validIdentifierPattern.MatchString(key) {
+		t.Errorf("key should match pattern %q: %q", validIdentifierPattern, key)
+	}
+
+	key = "_leading_underscore"
+	if !validIdentifierPattern.MatchString(key) {
+		t.Errorf("key should match pattern %q: %q", validIdentifierPattern, key)
+	}
+
+	key = "1_leading_digit"
+	if validIdentifierPattern.MatchString(key) {
+		t.Errorf("key should not match pattern %q: %q", validIdentifierPattern, key)
+	}
+
+	key = "contains whitespace"
+	if validIdentifierPattern.MatchString(key) {
+		t.Errorf("key should not match pattern %q: %q", validIdentifierPattern, key)
+	}
+
+	key = "contains-dash"
+	if validIdentifierPattern.MatchString(key) {
+		t.Errorf("key should not match pattern %q: %q", validIdentifierPattern, key)
+	}
+
+	key = "contains_special_character;"
+	if validIdentifierPattern.MatchString(key) {
+		t.Errorf("key should not match pattern %q: %q", validIdentifierPattern, key)
+	}
 }

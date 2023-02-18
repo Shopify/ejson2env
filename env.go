@@ -3,10 +3,13 @@ package ejson2env
 import (
 	"errors"
 	"fmt"
+	"regexp"
 )
 
 var errNoEnv = errors.New("environment is not set in ejson")
 var errEnvNotMap = errors.New("environment is not a map[string]interface{}")
+
+var validIdentifierPattern = regexp.MustCompile(`\A[a-zA-Z_][a-zA-Z0-9_]*\z`)
 
 // ExtractEnv extracts the environment values from the map[string]interface{}
 // containing all secrets, and returns a map[string]string containing the
@@ -26,6 +29,12 @@ func ExtractEnv(secrets map[string]interface{}) (map[string]string, error) {
 	envSecrets := make(map[string]string, len(envMap))
 
 	for key, rawValue := range envMap {
+		// Reject keys that would be invalid environment variable identifiers
+		if !validIdentifierPattern.MatchString(key) {
+			err := fmt.Errorf("invalid identifier as key in environment: %q", key)
+
+			return nil, err
+		}
 
 		// Only export values that convert to strings properly.
 		if value, ok := rawValue.(string); ok {
