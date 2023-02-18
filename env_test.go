@@ -14,7 +14,7 @@ func formatInvalid(received, expected string) string {
 
 func TestLoadSecrets(t *testing.T) {
 
-	rawValues, err := readSecrets("testdata/test.ejson", "./key", TestKeyValue)
+	rawValues, err := readSecrets("testdata/test-expected-usage.ejson", "./key", TestKeyValue)
 	if nil != err {
 		t.Fatal(err)
 	}
@@ -31,7 +31,7 @@ func TestLoadSecrets(t *testing.T) {
 
 func TestLoadNoEnvSecrets(t *testing.T) {
 
-	rawValues, err := readSecrets("testdata/test2.ejson", "./key", TestKeyValue)
+	rawValues, err := readSecrets("testdata/test-public-key-only.ejson", "./key", TestKeyValue)
 	if nil != err {
 		t.Fatal(err)
 	}
@@ -49,7 +49,7 @@ func TestLoadNoEnvSecrets(t *testing.T) {
 
 func TestLoadBadEnvSecrets(t *testing.T) {
 
-	rawValues, err := readSecrets("testdata/test3.ejson", "./key", TestKeyValue)
+	rawValues, err := readSecrets("testdata/test-environment-string-not-object.ejson", "./key", TestKeyValue)
 	if nil != err {
 		t.Fatal(err)
 	}
@@ -67,7 +67,7 @@ func TestLoadBadEnvSecrets(t *testing.T) {
 
 func TestLoadUnderscoreEnvSecrets(t *testing.T) {
 
-	rawValues, err := readSecrets("testdata/test4.ejson", "./key", TestKeyValue)
+	rawValues, err := readSecrets("testdata/test-leading-underscore-env-key.ejson", "./key", TestKeyValue)
 	if nil != err {
 		t.Fatal(err)
 	}
@@ -90,13 +90,13 @@ func TestInvalidEnvironments(t *testing.T) {
 		},
 	}
 
-	testBad := map[string]interface{}{
+	testBadNonMap := map[string]interface{}{
 		"environment": "bad",
 	}
 
 	var testNoEnv map[string]interface{}
 
-	_, err := ExtractEnv(testBad)
+	_, err := ExtractEnv(testBadNonMap)
 	if nil == err {
 		t.Errorf("no error when passed a non-map environment")
 	} else if errEnvNotMap != err {
