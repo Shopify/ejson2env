@@ -14,7 +14,7 @@ func formatInvalid(received, expected string) string {
 
 func TestLoadSecrets(t *testing.T) {
 
-	rawValues, err := readSecrets("testdata/test.ejson", "./key", TestKeyValue)
+	rawValues, err := readSecrets("testdata/test-expected-usage.ejson", "./key", TestKeyValue)
 	if nil != err {
 		t.Fatal(err)
 	}
@@ -31,7 +31,7 @@ func TestLoadSecrets(t *testing.T) {
 
 func TestLoadNoEnvSecrets(t *testing.T) {
 
-	rawValues, err := readSecrets("testdata/test2.ejson", "./key", TestKeyValue)
+	rawValues, err := readSecrets("testdata/test-public-key-only.ejson", "./key", TestKeyValue)
 	if nil != err {
 		t.Fatal(err)
 	}
@@ -49,7 +49,7 @@ func TestLoadNoEnvSecrets(t *testing.T) {
 
 func TestLoadBadEnvSecrets(t *testing.T) {
 
-	rawValues, err := readSecrets("testdata/test3.ejson", "./key", TestKeyValue)
+	rawValues, err := readSecrets("testdata/test-environment-string-not-object.ejson", "./key", TestKeyValue)
 	if nil != err {
 		t.Fatal(err)
 	}
@@ -67,7 +67,7 @@ func TestLoadBadEnvSecrets(t *testing.T) {
 
 func TestLoadUnderscoreEnvSecrets(t *testing.T) {
 
-	rawValues, err := readSecrets("testdata/test4.ejson", "./key", TestKeyValue)
+	rawValues, err := readSecrets("testdata/test-leading-underscore-env-key.ejson", "./key", TestKeyValue)
 	if nil != err {
 		t.Fatal(err)
 	}
@@ -90,17 +90,30 @@ func TestInvalidEnvironments(t *testing.T) {
 		},
 	}
 
-	testBad := map[string]interface{}{
+	testBadNonMap := map[string]interface{}{
 		"environment": "bad",
+	}
+
+	testBadInvalidKey := map[string]interface{}{
+		"environment": map[string]interface{}{
+			"invalid key": "test_value",
+		},
 	}
 
 	var testNoEnv map[string]interface{}
 
-	_, err := ExtractEnv(testBad)
+	_, err := ExtractEnv(testBadNonMap)
 	if nil == err {
 		t.Errorf("no error when passed a non-map environment")
 	} else if errEnvNotMap != err {
 		t.Errorf("wrong error when passed a non-map environment: %s", err)
+	}
+
+	_, err = ExtractEnv(testBadInvalidKey)
+	if nil == err {
+		t.Errorf("no error when passed an environment with invalid key")
+	} else if `invalid identifier as key in environment: "invalid key"` != err.Error() {
+		t.Errorf("wrong error when passed an environment with invalid key: %s", err)
 	}
 
 	_, err = ExtractEnv(testNoEnv)
@@ -132,4 +145,46 @@ func TestEscaping(t *testing.T) {
 		t.Fatal(formatInvalid(buf.String(), expectedOutput))
 	}
 
+}
+
+func TestIdentifierPattern(t *testing.T) {
+	key := "ALL_CAPS123"
+	if !validIdentifierPattern.MatchString(key) {
+		t.Errorf("key should match pattern %q: %q", validIdentifierPattern, key)
+	}
+
+	key = "lowercase"
+	if !validIdentifierPattern.MatchString(key) {
+		t.Errorf("key should match pattern %q: %q", validIdentifierPattern, key)
+	}
+
+	key = "a"
+	if !validIdentifierPattern.MatchString(key) {
+		t.Errorf("key should match pattern %q: %q", validIdentifierPattern, key)
+	}
+
+	key = "_leading_underscore"
+	if !validIdentifierPattern.MatchString(key) {
+		t.Errorf("key should match pattern %q: %q", validIdentifierPattern, key)
+	}
+
+	key = "1_leading_digit"
+	if validIdentifierPattern.MatchString(key) {
+		t.Errorf("key should not match pattern %q: %q", validIdentifierPattern, key)
+	}
+
+	key = "contains whitespace"
+	if validIdentifierPattern.MatchString(key) {
+		t.Errorf("key should not match pattern %q: %q", validIdentifierPattern, key)
+	}
+
+	key = "contains-dash"
+	if validIdentifierPattern.MatchString(key) {
+		t.Errorf("key should not match pattern %q: %q", validIdentifierPattern, key)
+	}
+
+	key = "contains_special_character;"
+	if validIdentifierPattern.MatchString(key) {
+		t.Errorf("key should not match pattern %q: %q", validIdentifierPattern, key)
+	}
 }

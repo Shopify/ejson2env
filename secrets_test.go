@@ -46,7 +46,7 @@ func TestReadAndExportEnv(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		err := ReadAndExportEnv("testdata/test.ejson", "./key", TestKeyValue, test.exportFunc)
+		err := ReadAndExportEnv("testdata/test-expected-usage.ejson", "./key", TestKeyValue, test.exportFunc)
 		if nil != err {
 			t.Errorf("testing %s failed: %s", test.name, err)
 			continue
