@@ -38,6 +38,10 @@ func main() {
 			Name:  "quiet, q",
 			Usage: "Suppress export statement",
 		},
+		cli.StringSliceFlag{
+			Name:  "include, i",
+			Usage: "Export only a subset of environment variables",
+		},
 	}
 
 	app.Action = func(c *cli.Context) {
@@ -69,7 +73,7 @@ func main() {
 			fail(fmt.Errorf("no secrets.ejson filename passed"))
 		}
 
-		if err := ejson2env.ReadAndExportEnv(filename, keydir, userSuppliedPrivateKey, exportFunc); nil != err {
+		if err := ejson2env.ReadAndExportEnv(filename, keydir, userSuppliedPrivateKey, exportFunc, c.StringSlice("include")); nil != err {
 			fail(err)
 		}
 	}
