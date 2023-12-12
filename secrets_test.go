@@ -31,22 +31,31 @@ func TestReadAndExportEnv(t *testing.T) {
 	tests := []struct {
 		name           string
 		exportFunc     ExportFunction
+		include        []string
 		expectedOutput string
 	}{
 		{
 			name:           "ExportEnv",
 			exportFunc:     ExportEnv,
-			expectedOutput: "export test_key='test value'\n",
+			include:        make([]string, 0),
+			expectedOutput: "export test_key='test value'\nexport test_key_2='test value 2'\nexport test_key_3='test value 3'\n",
 		},
 		{
 			name:           "ExportQuiet",
 			exportFunc:     ExportQuiet,
-			expectedOutput: "test_key='test value'\n",
+			include:        make([]string, 0),
+			expectedOutput: "test_key='test value'\ntest_key_2='test value 2'\ntest_key_3='test value 3'\n",
+		},
+		{
+			name:           "ExportInclude",
+			exportFunc:     ExportEnv,
+			include:        []string{"test_key", "test_key_3"},
+			expectedOutput: "export test_key='test value'\nexport test_key_3='test value 3'\n",
 		},
 	}
 
 	for _, test := range tests {
-		err := ReadAndExportEnv("testdata/test-expected-usage.ejson", "./key", TestKeyValue, test.exportFunc)
+		err := ReadAndExportEnv("testdata/test-expected-usage.ejson", "./key", TestKeyValue, test.exportFunc, test.include)
 		if nil != err {
 			t.Errorf("testing %s failed: %s", test.name, err)
 			continue
@@ -72,7 +81,7 @@ func TestReadAndExportEnvWithBadEjson(t *testing.T) {
 		output = os.Stdout
 	}()
 
-	err = ReadAndExportEnv("bad.ejson", "./key", TestKeyValue, ExportEnv)
+	err = ReadAndExportEnv("bad.ejson", "./key", TestKeyValue, ExportEnv, make([]string, 0))
 	if nil == err {
 		t.Fatal("failed to fail when loading a broken ejson file")
 	}

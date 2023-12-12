@@ -40,15 +40,39 @@ func IsEnvError(err error) bool {
 	return (errNoEnv == err || errEnvNotMap == err)
 }
 
+// FilterEnv removes any key from the secrets that's not in include.
+// If include is empty, return the secrets unchanged.
+func FilterEnv(originalEnv map[string]string, include []string) (map[string]string, error) {
+	if len(include) == 0 {
+		return originalEnv, nil
+	}
+
+	filteredEnv := make(map[string]string, len(include))
+	for _, key := range include {
+		if value, exists := originalEnv[key]; exists {
+			filteredEnv[key] = value
+		} else {
+			return map[string]string{}, fmt.Errorf("key not found in ejson file: %s", key)
+		}
+	}
+
+	return filteredEnv, nil
+}
+
 // ReadAndExportEnv wraps the read, extract, and export steps. Returns
 // an error if any step fails.
-func ReadAndExportEnv(filename, keyDir, privateKey string, exportFunc ExportFunction) error {
+func ReadAndExportEnv(filename, keyDir, privateKey string, exportFunc ExportFunction, include []string) error {
 	envValues, err := ReadAndExtractEnv(filename, keyDir, privateKey)
 
 	if nil != err && !IsEnvError(err) {
 		return fmt.Errorf("could not load environment from file: %s", err)
 	}
 
-	exportFunc(output, envValues)
+	filteredEnv, err := FilterEnv(envValues, include)
+	if nil != err {
+		return err
+	}
+
+	exportFunc(output, filteredEnv)
 	return nil
 }
