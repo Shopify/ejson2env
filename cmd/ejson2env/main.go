@@ -38,6 +38,10 @@ func main() {
 			Name:  "quiet, q",
 			Usage: "Suppress export statement",
 		},
+		cli.BoolFlag{
+			Name:  "raw, r",
+			Usage: "Skip shell-escaping values",
+		},
 	}
 
 	app.Action = func(c *cli.Context) {
@@ -46,11 +50,15 @@ func main() {
 
 		keydir := c.String("keydir")
 		quiet := c.Bool("quiet")
+		raw := c.Bool("raw")
 
 		// select the ExportFunction to use
 		exportFunc := ejson2env.ExportEnv
 		if quiet {
 			exportFunc = ejson2env.ExportQuiet
+		}
+		if raw {
+			exportFunc = ejson2env.ExportRaw
 		}
 
 		if c.Bool("key-from-stdin") {
