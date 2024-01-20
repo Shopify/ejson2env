@@ -18,7 +18,7 @@ jobs:
           fetch-depth: 0
       - name: Get latest Go version
         id: gover
-        run: echo ::set-output name=goversion::$(awk -F':|-' '/^FROM golang/ {print $2}' Dockerfile)
+        run: echo goversion=$(awk -F':|-' '/^FROM golang/ {print $2}' Dockerfile) >> "$GITHUB_OUTPUT"
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
@@ -29,7 +29,7 @@ jobs:
           version=${GITHUB_REF#refs/tags/v*}
           mkdir -p tmp
           sed '/^# '$version'/,/^# /!d;//d;/^\s*$/d' CHANGELOG.md > tmp/release_changelog.md
-          echo ::set-output name=VERSION::$version
+          echo VERSION=$version >> "$GITHUB_OUTPUT"
       - name: Release
         uses: goreleaser/goreleaser-action@v2
         with:
