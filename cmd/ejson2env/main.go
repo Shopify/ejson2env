@@ -38,6 +38,10 @@ func main() {
 			Name:  "quiet, q",
 			Usage: "Suppress export statement",
 		},
+		cli.BoolFlag{
+			Name:  "trim-underscore",
+			Usage: "Trim leading underscore from variable names",
+		},
 	}
 
 	app.Action = func(c *cli.Context) {
@@ -46,11 +50,16 @@ func main() {
 
 		keydir := c.String("keydir")
 		quiet := c.Bool("quiet")
+		trim_underscore := c.Bool("trim-underscore")
 
 		// select the ExportFunction to use
 		exportFunc := ejson2env.ExportEnv
 		if quiet {
 			exportFunc = ejson2env.ExportQuiet
+		}
+
+		if trim_underscore {
+			exportFunc = ejson2env.TrimLeadingUnderscoreExportWrapper(exportFunc)
 		}
 
 		if c.Bool("key-from-stdin") {
