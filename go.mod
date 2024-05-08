@@ -1,6 +1,6 @@
 module github.com/Shopify/ejson2env/v2
 
-go 1.18
+go 1.22.1
 
 require (
 	github.com/Shopify/ejson v1.3.3
