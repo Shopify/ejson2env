@@ -35,11 +35,13 @@ GEM
     public_suffix (5.0.1)
     rchardet (1.8.0)
     rdiscount (2.2.0.2)
-    rexml (3.2.5)
+    rexml (3.2.8)
+      strscan (>= 3.0.9)
     ronn (0.7.3)
       hpricot (>= 0.8.2)
       mustache (>= 0.7.0)
       rdiscount (>= 1.5.8)
+    strscan (3.1.0)
     stud (0.0.23)
 
 PLATFORMS
