@@ -38,7 +38,7 @@ $ eval $(ejson2env test.ejson)
 
 ## Using ejson2env
 
-`ejson2env`'s usage information is described in it's included [manual page](/man/ejson2env.1.ronn).
+`ejson2env`'s usage information is described in it's included `--help` flag.
 
 ## Installing ejson2env
 
