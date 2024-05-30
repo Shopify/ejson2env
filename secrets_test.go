@@ -31,22 +31,37 @@ func TestReadAndExportEnv(t *testing.T) {
 	tests := []struct {
 		name           string
 		exportFunc     ExportFunction
+		ejsonFile      string
 		expectedOutput string
 	}{
 		{
 			name:           "ExportEnv",
 			exportFunc:     ExportEnv,
+			ejsonFile:      "testdata/test-expected-usage.ejson",
 			expectedOutput: "export test_key='test value'\n",
 		},
 		{
 			name:           "ExportQuiet",
 			exportFunc:     ExportQuiet,
+			ejsonFile:      "testdata/test-expected-usage.ejson",
 			expectedOutput: "test_key='test value'\n",
+		},
+		{
+			name:           "ExportEnvTrimUnderscore",
+			exportFunc:     TrimLeadingUnderscoreExportWrapper(ExportEnv),
+			ejsonFile:      "testdata/test-leading-underscore-env-key.ejson",
+			expectedOutput: "export test_key='test value'\n",
+		},
+		{
+			name:           "ExportEnvNoTrimUnderscore",
+			exportFunc:     ExportEnv,
+			ejsonFile:      "testdata/test-leading-underscore-env-key.ejson",
+			expectedOutput: "export _test_key='test value'\n",
 		},
 	}
 
 	for _, test := range tests {
-		err := ReadAndExportEnv("testdata/test-expected-usage.ejson", "./key", TestKeyValue, test.exportFunc)
+		err := ReadAndExportEnv(test.ejsonFile, "./key", TestKeyValue, test.exportFunc)
 		if nil != err {
 			t.Errorf("testing %s failed: %s", test.name, err)
 			continue
