@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Go test
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Get latest Go version
         id: gover
         run: echo goversion=$(awk -F':|-' '/^FROM golang/ {print $2}' Dockerfile) >> "$GITHUB_OUTPUT"
