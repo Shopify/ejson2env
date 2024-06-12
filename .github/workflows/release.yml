@@ -31,11 +31,11 @@ jobs:
           sed '/^# '$version'/,/^# /!d;//d;/^\s*$/d' CHANGELOG.md > tmp/release_changelog.md
           echo VERSION=$version >> "$GITHUB_OUTPUT"
       - name: Release
-        uses: goreleaser/goreleaser-action@v2
+        uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser
-          version: v1.2.1
-          args: release --rm-dist --release-notes=tmp/release_changelog.md
+          version: v2.0.1
+          args: release --clean --release-notes=tmp/release_changelog.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: ruby/setup-ruby@v1
