@@ -15,7 +15,7 @@ jobs:
         id: gover
         run: echo goversion=$(awk -F':|-' '/^FROM golang/ {print $2}' Dockerfile) >> "$GITHUB_OUTPUT"
       - name: Setup go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v5
         with:
           go-version: "${{ steps.gover.outputs.goversion }}"
       - run: |
