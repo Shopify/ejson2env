@@ -1,4 +1,5 @@
-# .goreleaser.yaml
+version: 2
+
 universal_binaries:
   - replace: true
 builds:
