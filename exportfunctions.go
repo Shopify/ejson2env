@@ -22,3 +22,11 @@ func ExportQuiet(w io.Writer, values map[string]string) {
 		fmt.Fprintf(w, "%s=%s\n", key, shell.Escape(value))
 	}
 }
+
+// ExportRaw writes the passed environment values to the passed
+// io.Writer in %s=%s format without shell escaping.
+func ExportRaw(w io.Writer, values map[string]string) {
+	for key, value := range values {
+		fmt.Fprintf(w, "%s=%s\n", key, value)
+	}
+}
