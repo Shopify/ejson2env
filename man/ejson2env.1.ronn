@@ -23,6 +23,10 @@ workflow example.
     If set, assumes that the key that decrypts the passed ejson file was 
     passed in on standard input.
 
+  * `--include`=<key>:
+    If set, include in the output only the specified key(s). Can be provided
+    more than once.
+
 ## WORKFLOW
 
 ### 1: Add environment variables to an ejson file

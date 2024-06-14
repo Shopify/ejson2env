@@ -1,6 +1,8 @@
 {
     "_public_key": "795e671066eef17025c816b6d7c4f5c658b191cfaa31baca69963d761606415c",
     "environment": {
-        "test_key": "EJ[1:dgKp4cmFm42z8pfH/FJD8KRpaum5ZB6zACbuYvNFrGA=:wwS8w2C2Ihrg62M6E8H/G1Tt5gXocugo:Rv1qmluaq4HZHfr1lVtvAXxHrHsZSYio2wI=]"
+        "test_key": "EJ[1:dgKp4cmFm42z8pfH/FJD8KRpaum5ZB6zACbuYvNFrGA=:wwS8w2C2Ihrg62M6E8H/G1Tt5gXocugo:Rv1qmluaq4HZHfr1lVtvAXxHrHsZSYio2wI=]",
+        "test_key_2": "EJ[1:J2tLLU5iE4QqgzM1hOpK44jv8DhC8+1VYJGEh+2AJkE=:tRz/uG5NHkzRYmJ8+SUQMZxoMSO/gNR9:lnUJz70aqVT6Y3oQtybXHKDC88srWAhPbiqTuA==]",
+        "test_key_3": "EJ[1:CP6m/QOGqF4mXVzMrvuHtw9eFUq3OEJobv6AbjDgJWM=:l8rkRosxfPmzTOCdPPsC5arkwVzKj2PM:NGL6F62pADDuOfFOh6hfA2ObSYRVo1D4uMgrYQ==]"
     }
 }
