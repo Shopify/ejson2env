@@ -43,6 +43,11 @@ func TestReadAndExportEnv(t *testing.T) {
 			exportFunc:     ExportQuiet,
 			expectedOutput: "test_key='test value'\n",
 		},
+		{
+			name:           "ExportRaw",
+			exportFunc:     ExportRaw,
+			expectedOutput: "test_key=test value\n",
+		},
 	}
 
 	for _, test := range tests {
