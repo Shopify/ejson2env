@@ -1,4 +1,4 @@
-FROM golang:1.23.3-alpine AS builder
+FROM golang:1.24rc2-alpine AS builder
 WORKDIR /go/src/github.com/Shopify/ejson2env
 COPY . .
 RUN apk add --no-cache git && \
