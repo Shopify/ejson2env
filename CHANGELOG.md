@@ -1,3 +1,7 @@
+# 2.0.8 
+
+Adds patch to safely escape characters during decryption.
+
 # 2.0.7
 
 Bumps golang.org/x/crypto from 0.17.0 to 0.31.0
