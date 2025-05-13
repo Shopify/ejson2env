@@ -2,6 +2,8 @@ package ejson2env_test
 
 import (
 	"bytes"
+	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/Shopify/ejson2env/v2"
@@ -22,13 +24,6 @@ func TestExportEnv(t *testing.T) {
 				"key": "value",
 			},
 			expected: "export key=value\n",
-		},
-		"multiple keys": {
-			env: map[string]string{
-				"key1": "value 1",
-				"key2": "value ' with some \" quotes and emoji 🐈",
-			},
-			expected: "export key1='value 1'\nexport key2='value '\\'' with some \" quotes and emoji 🐈'\n",
 		},
 		"attempt command injection in key": {
 			env: map[string]string{
@@ -63,5 +58,30 @@ func TestExportEnv(t *testing.T) {
 				t.Errorf("expected %q, got %q", tc.expected, buf.String())
 			}
 		})
+	}
+}
+
+// TestExportEnvMultipleKeys tests exporting multiple environment variables
+// with map key order independence
+func TestExportEnvMultipleKeys(t *testing.T) {
+	fmt.Println("===== RUNNING TestExportEnvMultipleKeys TEST =====")
+	t.Parallel()
+
+	env := map[string]string{
+		"key1": "value 1",
+		"key2": "value ' with some \" quotes and emoji 🐈",
+	}
+
+	var buf bytes.Buffer
+	ejson2env.ExportEnv(&buf, env)
+	output := buf.String()
+	t.Log(output)
+
+	// Check for each expected line individually
+	if !strings.Contains(output, "export key1='value 1'") {
+		t.Errorf("output missing 'export key1='value 1''")
+	}
+	if !strings.Contains(output, "export key2='value '\\'' with some \" quotes and emoji 🐈'") {
+		t.Errorf("output missing key2 with proper escaping")
 	}
 }
