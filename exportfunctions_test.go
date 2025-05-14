@@ -9,11 +9,12 @@ import (
 	"github.com/Shopify/ejson2env/v2"
 )
 
-func TestExportEnv(t *testing.T) {
+func TestExport(t *testing.T) {
 	t.Parallel()
 	cases := map[string]struct {
-		env      map[string]string
-		expected string
+		env           map[string]string
+		expected      string
+		expectedQuiet string
 	}{
 		"empty": {
 			env:      map[string]string{},
@@ -23,25 +24,43 @@ func TestExportEnv(t *testing.T) {
 			env: map[string]string{
 				"key": "value",
 			},
-			expected: "export key=value\n",
+			expected:      "export key=value\n",
+			expectedQuiet: "key=value\n",
 		},
 		"attempt command injection in key": {
 			env: map[string]string{
 				"key; touch pwned.txt": "value",
 			},
-			expected: "",
+			expected:      "",
+			expectedQuiet: "",
+		},
+		"newline in key": {
+			env: map[string]string{
+				"touch pwned.txt;\ndummy": "value",
+			},
+			expected:      "",
+			expectedQuiet: "",
 		},
 		"attempt command injection in value": {
 			env: map[string]string{
 				"key": "value; touch pwned.txt",
 			},
-			expected: "export key='value; touch pwned.txt'\n",
+			expected:      "export key='value; touch pwned.txt'\n",
+			expectedQuiet: "key='value; touch pwned.txt'\n",
 		},
 		"attempt command injection via control characters": {
 			env: map[string]string{
 				"key": "\bvalue; touch pwned.txt",
 			},
-			expected: "export key='value; touch pwned.txt'\n",
+			expected:      "export key='value; touch pwned.txt'\n",
+			expectedQuiet: "key='value; touch pwned.txt'\n",
+		},
+		"newline in value": {
+			env: map[string]string{
+				"key": "value\nnewline",
+			},
+			expected:      "export key=valuenewline\n",
+			expectedQuiet: "key=valuenewline\n",
 		},
 	}
 
@@ -50,13 +69,25 @@ func TestExportEnv(t *testing.T) {
 		t.Run(label, func(t *testing.T) {
 			t.Parallel()
 
-			var buf bytes.Buffer
-			ejson2env.ExportEnv(&buf, tc.env)
-			t.Log(buf.String())
+			t.Run("ExportEnv", func(t *testing.T) {
+				var buf bytes.Buffer
+				ejson2env.ExportEnv(&buf, tc.env)
+				t.Log(buf.String())
 
-			if buf.String() != tc.expected {
-				t.Errorf("expected %q, got %q", tc.expected, buf.String())
-			}
+				if buf.String() != tc.expected {
+					t.Errorf("expected %q, got %q", tc.expected, buf.String())
+				}
+			})
+
+			t.Run("ExportQuiet", func(t *testing.T) {
+				var buf bytes.Buffer
+				ejson2env.ExportQuiet(&buf, tc.env)
+				t.Log(buf.String())
+
+				if buf.String() != tc.expectedQuiet {
+					t.Errorf("expected %q, got %q", tc.expectedQuiet, buf.String())
+				}
+			})
 		})
 	}
 }
