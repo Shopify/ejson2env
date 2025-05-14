@@ -112,7 +112,7 @@ func TestExportEnvMultipleKeys(t *testing.T) {
 	if !strings.Contains(output, "export key1='value 1'") {
 		t.Errorf("output missing 'export key1='value 1''")
 	}
-	if !strings.Contains(output, "export key2='value '\\'' with some \" quotes and emoji 🐈'") {
+	if !strings.Contains(output, "export key2='value '\"'\"' with some \" quotes and emoji 🐈'") {
 		t.Errorf("output missing key2 with proper escaping")
 	}
 }
