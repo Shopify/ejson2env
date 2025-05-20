@@ -62,7 +62,7 @@ func validKey(k string) bool {
 
 func filteredValue(v string) string {
 	printable := strings.Map(func(r rune) rune {
-		if unicode.IsControl(r) {
+		if unicode.IsControl(r) && r != '\n' {
 			return -1
 		}
 		return r

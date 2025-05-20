@@ -59,8 +59,15 @@ func TestExport(t *testing.T) {
 			env: map[string]string{
 				"key": "value\nnewline",
 			},
-			expected:      "export key=valuenewline\n",
-			expectedQuiet: "key=valuenewline\n",
+			expected:      "export key='value\nnewline'\n",
+			expectedQuiet: "key='value\nnewline'\n",
+		},
+		"escaped newlines in value": {
+			env: map[string]string{
+				"key": "value\\nnewline",
+			},
+			expected:      "export key='value\\nnewline'\n",
+			expectedQuiet: "key='value\\nnewline'\n",
 		},
 	}
 
