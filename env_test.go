@@ -139,7 +139,7 @@ func TestEscaping(t *testing.T) {
 
 	ExportEnv(&buf, testValues)
 
-	expectedOutput := "export test='test value'\\''; echo dangerous; echo '\\''done'\n"
+	expectedOutput := "export test='test value'\"'\"'; echo dangerous; echo '\"'\"'done'\n"
 
 	if expectedOutput != buf.String() {
 		t.Fatal(formatInvalid(buf.String(), expectedOutput))

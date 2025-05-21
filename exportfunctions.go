@@ -3,46 +3,24 @@ package ejson2env
 import (
 	"fmt"
 	"io"
-	"regexp"
+	"os"
+	"sort"
 	"strings"
 	"unicode"
 
-	"github.com/taskcluster/shell"
+	"al.essio.dev/pkg/shellescape"
 )
-
-var exportCommandPattern = regexp.MustCompile(`^export [a-zA-Z_][a-zA-Z0-9_-]*=([A-Za-z0-9/:=-]+|'.*')$`)
-var quietCommandPattern = regexp.MustCompile(`^[a-zA-Z_][a-zA-Z0-9_-]*=([A-Za-z0-9/:=-]+|'.*')$`)
-
-// ValidateExportCommand checks if a string matches the format: export some_username='anycharacters'
-func ValidateExportCommand(cmd string) bool {
-	return exportCommandPattern.MatchString(cmd)
-}
-
-// ValidateQuietCommand checks if a string matches the format: some_username='anycharacters'
-func ValidateQuietCommand(cmd string) bool {
-	return quietCommandPattern.MatchString(cmd)
-}
 
 // ExportEnv writes the passed environment values to the passed
 // io.Writer.
 func ExportEnv(w io.Writer, values map[string]string) {
-	for key, value := range values {
-		cmd := fmt.Sprintf("export %s=%s", key, escape(value))
-		if ValidateExportCommand(cmd) {
-			fmt.Fprintln(w, cmd)
-		}
-	}
+	export(w, "export ", values)
 }
 
 // ExportQuiet writes the passed environment values to the passed
 // io.Writer in %s=%s format.
 func ExportQuiet(w io.Writer, values map[string]string) {
-	for key, value := range values {
-		cmd := fmt.Sprintf("%s=%s", key, escape(value))
-		if ValidateQuietCommand(cmd) {
-			fmt.Fprintln(w, cmd)
-		}
-	}
+	export(w, "", values)
 }
 
 func TrimLeadingUnderscoreExportWrapper(exportfunc ExportFunction) ExportFunction {
@@ -57,12 +35,42 @@ func TrimLeadingUnderscoreExportWrapper(exportfunc ExportFunction) ExportFunctio
 	}
 }
 
-func escape(v string) string {
+func export(w io.Writer, prefix string, values map[string]string) {
+	keys := make([]string, 0, len(values))
+	for k := range values {
+		if !validKey(k) {
+			fmt.Fprintf(os.Stderr, "ejson2env blocked invalid key")
+			continue
+		}
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	for _, k := range keys {
+		value := filteredValue(values[k])
+		fmt.Fprintf(w, "%s%s=%s\n", prefix, k, value)
+	}
+}
+
+func validKey(k string) bool {
+	for _, r := range k {
+		if !unicode.IsLetter(r) && !unicode.IsDigit(r) && r != '_' && r != '-' {
+			return false
+		}
+	}
+	return true
+}
+
+func filteredValue(v string) string {
 	printable := strings.Map(func(r rune) rune {
-		if unicode.IsControl(r) {
+		if unicode.IsControl(r) && r != '\n' {
 			return -1
 		}
 		return r
 	}, v)
-	return shell.Escape(printable)
+
+	if printable != v {
+		fmt.Fprintf(os.Stderr, "ejson2env trimmed control characters from value")
+	}
+
+	return shellescape.Quote(printable)
 }

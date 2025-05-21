@@ -1,11 +1,12 @@
 module github.com/Shopify/ejson2env/v2
 
-go 1.18
+go 1.24.2
 
 require (
+	al.essio.dev/pkg/shellescape v1.6.0
 	github.com/Shopify/ejson v1.3.3
-	github.com/taskcluster/shell v0.0.0-20191115171910-c688067f12d3
 	github.com/urfave/cli v1.22.4
+
 )
 
 require (
