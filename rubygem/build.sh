@@ -3,9 +3,9 @@ set -e
 mkdir -p rubygem/build/linux-amd64
 mkdir -p rubygem/build/darwin-all
 mkdir -p rubygem/build/freebsd-amd64
-cp dist/ejson2env_linux_amd64/ejson2env rubygem/build/linux-amd64/ejson2env
+cp dist/ejson2env_linux_amd64_v1/ejson2env rubygem/build/linux-amd64/ejson2env
 cp dist/ejson2env_darwin_all/ejson2env rubygem/build/darwin-all/ejson2env
-cp dist/ejson2env_freebsd_amd64/ejson2env rubygem/build/freebsd-amd64/ejson2env
+cp dist/ejson2env_freebsd_amd64_v1/ejson2env rubygem/build/freebsd-amd64/ejson2env
 cp LICENSE.txt rubygem/LICENSE.txt
 bundle install
 mkdir -p rubygem/lib/ejson2env
