@@ -17,4 +17,5 @@ Gem::Specification.new do |spec|
   spec.executables   = ["ejson2env"]
   spec.test_files    = []
   spec.require_paths = ["lib"]
+  spec.metadata["rubygems_mfa_required"] = "true"
 end
