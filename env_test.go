@@ -24,7 +24,7 @@ func TestLoadSecrets(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if "test value" != envValues["test_key"] {
+	if envValues["test_key"] != "test value" {
 		t.Error("Failed to decrypt")
 	}
 }
@@ -77,7 +77,7 @@ func TestLoadUnderscoreEnvSecrets(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if "test value" != envValues["_test_key"] {
+	if envValues["_test_key"] != "test value" {
 		t.Error("Failed to decrypt")
 	}
 
@@ -112,7 +112,7 @@ func TestInvalidEnvironments(t *testing.T) {
 	_, err = ExtractEnv(testBadInvalidKey)
 	if nil == err {
 		t.Errorf("no error when passed an environment with invalid key")
-	} else if `invalid identifier as key in environment: "invalid key"` != err.Error() {
+	} else if err.Error() != `invalid identifier as key in environment: "invalid key"` {
 		t.Errorf("wrong error when passed an environment with invalid key: %s", err)
 	}
 

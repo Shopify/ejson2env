@@ -42,6 +42,10 @@ func main() {
 			Name:  "trim-underscore",
 			Usage: "Trim leading underscore from variable names",
 		},
+		cli.BoolFlag{
+			Name:  "github-actions",
+			Usage: "Output GitHub Actions mask commands to prevent secrets from appearing in logs",
+		},
 	}
 
 	app.Action = func(c *cli.Context) {
@@ -51,6 +55,7 @@ func main() {
 		keydir := c.String("keydir")
 		quiet := c.Bool("quiet")
 		trim_underscore := c.Bool("trim-underscore")
+		github_actions := c.Bool("github-actions")
 
 		// select the ExportFunction to use
 		exportFunc := ejson2env.ExportEnv
@@ -58,8 +63,16 @@ func main() {
 			exportFunc = ejson2env.ExportQuiet
 		}
 
+		// Apply trim-underscore wrapper first (closest to base export function)
+		// so that GitHub Actions masking can see the original key names
 		if trim_underscore {
 			exportFunc = ejson2env.TrimLeadingUnderscoreExportWrapper(exportFunc)
+		}
+
+		// Apply GitHub Actions masking wrapper last (outermost)
+		// so it receives the original key names and can decide what to mask
+		if github_actions {
+			exportFunc = ejson2env.GitHubActionsMaskWrapper(exportFunc)
 		}
 
 		if c.Bool("key-from-stdin") {
@@ -74,7 +87,7 @@ func main() {
 			filename = c.Args().Get(0)
 		}
 
-		if "" == filename {
+		if filename == "" {
 			fail(fmt.Errorf("no secrets.ejson filename passed"))
 		}
 
