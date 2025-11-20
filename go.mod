@@ -6,7 +6,6 @@ require (
 	al.essio.dev/pkg/shellescape v1.6.0
 	github.com/Shopify/ejson v1.3.3
 	github.com/urfave/cli v1.22.4
-
 )
 
 require (
@@ -15,6 +14,6 @@ require (
 	github.com/russross/blackfriday/v2 v2.0.1 // indirect
 	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
 	github.com/smartystreets/goconvey v1.6.7 // indirect
-	golang.org/x/crypto v0.35.0 // indirect
-	golang.org/x/sys v0.30.0 // indirect
+	golang.org/x/crypto v0.45.0 // indirect
+	golang.org/x/sys v0.38.0 // indirect
 )
