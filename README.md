@@ -33,7 +33,7 @@ export SECRET_SHELL_VARIABLE=<decrypted data>
 You can then have your shell evaluate this output:
 
 ```shell
-$ eval $(ejson2env test.ejson)
+$ eval "$(ejson2env test.ejson)"
 ```
 
 ## Using ejson2env
