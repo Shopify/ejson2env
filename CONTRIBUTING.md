@@ -59,11 +59,19 @@ Before releasing a new version, bump `/VERSION`, commit the changes and open a P
 
 Tag the commit in `main` using `git tag vx.y.z`, e.g. `v1.0.0`.
 
-In order to release the rubygem, find someone in the owners list at
-https://rubygems.org/gems/ejson2env and ask them to add you, then:
+The release workflow publishes the Ruby gem to RubyGems.org with [trusted publishing](https://guides.rubygems.org/trusted-publishing/).
+The workflow also attaches the gem to the GitHub release.
 
-1. Download the gem file from the release
-1. `gem push ejson2env-x.y.z.gem`
+Before the first automated release, a gem owner must add a trusted publisher for [ejson2env](https://rubygems.org/gems/ejson2env).
+Use these values:
+
+- Repository owner: `Shopify`
+- Repository name: `ejson2env`
+- Workflow filename: `release.yml`
+- Environment: Leave the field empty.
+
+GitHub Actions obtains a short-lived token for each release.
+Do not add a RubyGems API token to the repository secrets.
 
 Releasing the homebrew package is more awkward. There is surely a more
 efficient way to do this but current process is:

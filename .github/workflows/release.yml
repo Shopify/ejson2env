@@ -4,13 +4,13 @@ on:
   push:
     tags: [ 'v*.*.*' ]
 
-permissions:
-  contents: write
-  packages: write
-
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -58,3 +58,9 @@ jobs:
           asset_path: "./rubygem/ejson2env-${{ steps.version.outputs.version }}.gem"
           asset_name: "ejson2env-${{ steps.version.outputs.version }}.gem"
           asset_content_type: application/x-tar
+      - name: Configure RubyGems credentials
+        uses: rubygems/configure-rubygems-credentials@dc5a8d8553e6ee01fc26761a49e99e733d17954a # v2.1.0
+      - name: Publish to RubyGems.org
+        run: gem push "./rubygem/ejson2env-${VERSION}.gem" --host https://rubygems.org
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
