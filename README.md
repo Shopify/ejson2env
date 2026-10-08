@@ -30,7 +30,7 @@ Would result in the following output:
 export SECRET_SHELL_VARIABLE=<decrypted data>
 ```
 
-You can then have your shell evaluate this output:
+You can then have your shell evaluate this output. Keep the command substitution double-quoted to prevent word splitting and filename expansion before `eval` parses the output:
 
 ```shell
 $ eval "$(ejson2env test.ejson)"
