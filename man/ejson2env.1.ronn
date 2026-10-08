@@ -72,8 +72,7 @@ The following output would be generated for our example:
 export DB_PASSWORD=1234password
 ``` 
 
-You can then export them to the shell environment by calling the `ejson2env`
-command with `eval` command.
+You can then export them to the shell environment with `eval`. Keep the command substitution double-quoted to prevent word splitting and filename expansion before `eval` parses the output.
 
 For example:
 
@@ -82,7 +81,7 @@ For example:
 
 eval "$(ejson2env /config/secrets.production.ejson)"
 
-echo $DB_PASSWORD
+echo "$DB_PASSWORD"
 ```
 
 ## BUGS

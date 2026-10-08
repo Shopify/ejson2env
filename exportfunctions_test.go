@@ -55,6 +55,13 @@ func TestExport(t *testing.T) {
 			expected:      "export key='value; touch pwned.txt'\n",
 			expectedQuiet: "key='value; touch pwned.txt'\n",
 		},
+		"zsh equals expansion in value": {
+			env: map[string]string{
+				"key": "=true",
+			},
+			expected:      "export key='=true'\n",
+			expectedQuiet: "key='=true'\n",
+		},
 		"newline in value": {
 			env: map[string]string{
 				"key": "value\nnewline",

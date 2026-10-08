@@ -12,13 +12,14 @@ import (
 )
 
 // ExportEnv writes the passed environment values to the passed
-// io.Writer.
+// io.Writer as POSIX shell code. When using eval, pass the output as a single,
+// double-quoted argument to prevent word splitting and filename expansion.
 func ExportEnv(w io.Writer, values map[string]string) {
 	export(w, "export ", values)
 }
 
 // ExportQuiet writes the passed environment values to the passed
-// io.Writer in %s=%s format.
+// io.Writer in %s=%s format, with the same shell quoting requirements as ExportEnv.
 func ExportQuiet(w io.Writer, values map[string]string) {
 	export(w, "", values)
 }
@@ -39,7 +40,7 @@ func export(w io.Writer, prefix string, values map[string]string) {
 	keys := make([]string, 0, len(values))
 	for k := range values {
 		if !validKey(k) {
-			fmt.Fprintf(os.Stderr, "ejson2env blocked invalid key")
+			fmt.Fprintln(os.Stderr, "ejson2env blocked invalid key")
 			continue
 		}
 		keys = append(keys, k)
@@ -51,26 +52,31 @@ func export(w io.Writer, prefix string, values map[string]string) {
 	}
 }
 
+// validKey accepts only POSIX shell names. Keys are validated when the file is
+// read, but options such as --trim-underscore rewrite them afterwards, and an
+// empty or otherwise invalid name here would change what the shell executes.
 func validKey(k string) bool {
-	for _, r := range k {
-		if !unicode.IsLetter(r) && !unicode.IsDigit(r) && r != '_' && r != '-' {
-			return false
-		}
-	}
-	return true
+	return validIdentifierPattern.MatchString(k)
 }
 
 func filteredValue(v string) string {
 	printable := strings.Map(func(r rune) rune {
-		if unicode.IsControl(r) && r != '\n' {
+		// Tabs and newlines are safe inside the single quotes the exporter emits.
+		if unicode.IsControl(r) && r != '\n' && r != '\t' {
 			return -1
 		}
 		return r
 	}, v)
 
 	if printable != v {
-		fmt.Fprintf(os.Stderr, "ejson2env trimmed control characters from value")
+		fmt.Fprintln(os.Stderr, "ejson2env trimmed control characters from value")
 	}
 
-	return shellescape.Quote(printable)
+	quoted := shellescape.Quote(printable)
+	// shellescape leaves '=' unquoted, but zsh expands a leading '=' in an
+	// assignment value to the corresponding command path.
+	if strings.HasPrefix(quoted, "=") {
+		return "'" + quoted + "'"
+	}
+	return quoted
 }

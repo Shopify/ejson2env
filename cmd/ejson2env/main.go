@@ -20,6 +20,7 @@ func fail(err error) {
 func main() {
 	app := cli.NewApp()
 	app.Usage = "get environment variables from ejson files"
+	app.Description = `To load the output in a POSIX shell, use eval "$(ejson2env file.ejson)". Keep the quotes: without them the shell splits and expands the output before eval runs it.`
 	app.Version = version
 	app.Author = "Catherine Jones"
 	app.Email = "catherine.jones@shopify.com"
