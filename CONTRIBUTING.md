@@ -68,7 +68,7 @@ Use these values:
 - Repository owner: `Shopify`
 - Repository name: `ejson2env`
 - Workflow filename: `release.yml`
-- Environment: Leave the field empty.
+- Environment: `release`
 
 GitHub Actions obtains a short-lived token for each release.
 Do not add a RubyGems API token to the repository secrets.
