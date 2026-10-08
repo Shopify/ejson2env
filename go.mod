@@ -1,6 +1,6 @@
 module github.com/Shopify/ejson2env/v2
 
-go 1.24.2
+go 1.25.0
 
 require (
 	al.essio.dev/pkg/shellescape v1.6.0
@@ -14,6 +14,6 @@ require (
 	github.com/russross/blackfriday/v2 v2.0.1 // indirect
 	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
 	github.com/smartystreets/goconvey v1.6.7 // indirect
-	golang.org/x/crypto v0.45.0 // indirect
-	golang.org/x/sys v0.38.0 // indirect
+	golang.org/x/crypto v0.52.0 // indirect
+	golang.org/x/sys v0.45.0 // indirect
 )
