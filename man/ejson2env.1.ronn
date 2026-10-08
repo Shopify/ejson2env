@@ -80,7 +80,7 @@ For example:
 ```
 #!/bin/sh
 
-eval $(ejson2env /config/secrets.production.ejson)
+eval "$(ejson2env /config/secrets.production.ejson)"
 
 echo $DB_PASSWORD
 ```
